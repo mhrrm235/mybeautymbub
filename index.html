@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spesial Untuk Mbub Sayang | Selamat Ulang Tahun 💖</title>
+  <meta name="description" content="Landing page kejutan ucapan selamat ulang tahun spesial untuk Mbub sayang dengan countdown timer dan kartu kado interaktif.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Ambient Lights & Stars -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+  <div id="stars-container"></div>
+  <canvas id="heart-canvas"></canvas>
+
+  <!-- Top Floating Controls -->
+  <header class="top-nav">
+    <div class="brand-tag">
+      <i class="fa-solid fa-heart beat-icon"></i>
+      <span>For My Special One: Mbub</span>
+    </div>
+    
+    <div class="nav-actions">
+      <!-- Music Toggle Button & Song Badge -->
+      <button id="musicToggleBtn" class="glass-btn music-control-btn" title="Putar / Jeda Lagu Jamrud - Selamat Ulang Tahun" aria-label="Toggle Musik">
+        <i class="fa-solid fa-compact-disc disc-icon"></i>
+        <span class="music-label">Jamrud - Selamat Ulang Tahun</span>
+        <span class="music-wave">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Background Music Audio Element -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="jamrud.m4a" type="audio/mp4">
+    <source src="jamrud.webm" type="audio/webm">
+    <source src="jamrud.mp3" type="audio/mpeg">
+  </audio>
+
+  <main class="main-container">
+    <!-- ============================================== -->
+    <!-- STATE 1: COUNTDOWN / LOCKED SCREEN             -->
+    <!-- ============================================== -->
+    <section id="lockedState" class="state-section active-state">
+      <div class="locked-card glass-panel">
+        <div class="locked-badge">
+          <i class="fa-solid fa-sparkles"></i>
+          <span>Menghitung Hari Spesial</span>
+        </div>
+
+        <h1 class="locked-title">
+          Untuk <span class="highlight-name">Mbub Sayang</span> Tercinta 💕
+        </h1>
+
+        <p class="locked-subtitle">
+          Ada kejutan penuh cinta dan doa yang sedang dirangkai khusus untukmu. Kado ini terkunci dan akan terbuka otomatis tepat di hari bahagiamu!
+        </p>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-wrapper">
+          <div class="countdown-box">
+            <span class="countdown-num" id="days">00</span>
+            <span class="countdown-label">Hari</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-box">
+            <span class="countdown-num" id="hours">00</span>
+            <span class="countdown-label">Jam</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-box">
+            <span class="countdown-num" id="minutes">00</span>
+            <span class="countdown-label">Menit</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-box">
+            <span class="countdown-num" id="seconds">00</span>
+            <span class="countdown-label">Detik</span>
+          </div>
+        </div>
+
+        <div class="target-date-info">
+          <i class="fa-regular fa-calendar-check"></i>
+          <span>Waktu Terbuka: <strong>19 Oktober 00:00:00 WIB</strong></span>
+        </div>
+
+        <!-- Locked Gift Box Visual (Interactive on Click) -->
+        <div class="gift-box-container" id="lockedGiftTrigger" role="button" tabindex="0" title="Klik untuk mencoba membuka kado">
+          <div class="gift-box-glow"></div>
+          <div class="gift-box">
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+            <div class="gift-bow">🎀</div>
+            <div class="lock-shield">
+              <i class="fa-solid fa-lock" id="lockIcon"></i>
+            </div>
+          </div>
+          <p class="click-hint">
+            <i class="fa-solid fa-hand-pointer pulse-icon"></i> Sentuh kado ini
+          </p>
+        </div>
+
+        <!-- Dynamic Locked Message Modal / Alert -->
+        <div id="lockedAlert" class="locked-alert hidden">
+          <div class="alert-content">
+            <i class="fa-solid fa-heart-crack alert-icon"></i>
+            <p id="lockedAlertMsg">Eitss belum boleh dibuka ya Mbub sayang! 🙈 Sabar yaa, kado ini baru bisa dibuka pas tanggal 19 Oktober jam 00:00! ✨</p>
+          </div>
+        </div>
+
+        <!-- Quotes Carousel -->
+        <div class="quotes-ticker">
+          <i class="fa-solid fa-quote-left quote-icon"></i>
+          <p id="quoteText" class="fade-quote">"Setiap detik yang berdetak adalah bukti betapa berartinya kehadiranmu di dunia ini..."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- STATE 2: UNLOCKED / CELEBRATION SCREEN          -->
+    <!-- ============================================== -->
+    <section id="unlockedState" class="state-section hidden-state">
+      
+      <!-- HERO BANNER -->
+      <div class="hero-celebration">
+        <div class="confetti-badge">
+          <span>✨ IT'S YOUR SPECIAL DAY ✨</span>
+        </div>
+        <h1 class="grand-birthday-title">
+          Selamat Ulang Tahun,<br>
+          <span class="hero-name-gradient">Mbub Sayang!</span> 🎂💖
+        </h1>
+        <p class="hero-subtext">
+          Hari ini seluruh alam semesta tersenyum merayakan hadirnya sosok terindah, terlucu, dan paling tersayang.
+        </p>
+      </div>
+
+      <!-- VIRTUAL CAKE SECTION -->
+      <div class="glass-panel cake-panel">
+        <h2 class="section-title">
+          <i class="fa-solid fa-cake-candles"></i> Tiup Lilin Ulang Tahun
+        </h2>
+        <p class="section-desc">Pikirkan satu permohonan tulus dari hatimu, lalu klik api lilin untuk meniupnya 🎂✨</p>
+
+        <div class="cake-stage">
+          <div class="birthday-cake" id="cakeElement">
+            <div class="candle" id="candle">
+              <div class="flame" id="flame"></div>
+            </div>
+            <div class="cake-layer layer-top">
+              <div class="icing"></div>
+              <div class="cherry cherry-1">🍒</div>
+              <div class="cherry cherry-2">🍓</div>
+              <div class="cherry cherry-3">🍒</div>
+            </div>
+            <div class="cake-layer layer-middle"></div>
+            <div class="cake-layer layer-bottom"></div>
+            <div class="cake-plate"></div>
+          </div>
+        </div>
+
+        <div id="wishResult" class="wish-result-message hidden">
+          <div class="wish-balloon-burst">🎈✨</div>
+          <h3>Permohonanmu Telah Diterbangkan ke Langit! 🌟</h3>
+          <p>Semoga semua impian indah Mbub lekas terkabul, senyum bahagia selalu terpancar, dan kebahagiaan tak pernah usai melingkupimu!</p>
+        </div>
+
+        <button id="blowCandleBtn" class="action-glow-btn">
+          <i class="fa-solid fa-wind"></i> <span id="blowBtnLabel">Tiup Lilin Sekarang</span>
+        </button>
+      </div>
+
+      <!-- SURAT CINTA INTERAKTIF (LOVE LETTER) -->
+      <div class="glass-panel letter-panel">
+        <h2 class="section-title">
+          <i class="fa-solid fa-envelope-open-text"></i> Surat Cinta Untuk Mbub
+        </h2>
+        <p class="section-desc">Buka amplop di bawah ini untuk membaca surat yang ditulis khusus dengan segenap rasa sayang</p>
+
+        <div class="envelope-wrapper" id="envelopeWrapper">
+          <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-seal" id="envelopeSeal">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+            <div class="envelope-pocket"></div>
+            
+            <div class="letter-paper" id="letterPaper">
+              <div class="letter-header">
+                <span class="letter-date" id="letterCurrentDate">19 Oktober</span>
+                <span class="letter-to">Kepada: Mbub Tersayang</span>
+              </div>
+              <div class="letter-body">
+                <p class="letter-salutation">Hai Mbub Sayang, cintaku, bahagiaku...</p>
+                <p>
+                  Barakallah fii umrik! Selamat bertambah usia ya sayangku. Di hari yang begitu istimewa ini, aku hanya ingin mengucapkan terima kasih yang tak terhingga karena kamu telah lahir ke dunia dan menjadi bagian paling indah dalam hidupku.
+                </p>
+                <p>
+                  Terima kasih atas segala senyum manismu yang selalu menghapus lelah, tawamu yang selalu mencerahkan hariku, dan kehangatan hatimu yang tak pernah berhenti membuatku jatuh cinta berulang kali setiap hari.
+                </p>
+                <p>
+                  Doaku untuk Mbub di usia yang baru ini: Semoga Mbub selalu diberikan kesehatan, umur yang berkah, rezeki yang berlimpah, kelancaran dalam segala cita-cita dan urusan, serta hati yang senantiasa diliputi kedamaian dan rasa bahagia. Apapun yang terjadi di depan nanti, ingat ya sayang, aku akan selalu ada di sampingmu untuk mendukung dan menggenggam tanganmu.
+                </p>
+                <p>
+                  Tetaplah menjadi Mbub yang menggemaskan, kuat, dan luar biasa. Aku sayang banget sama Mbub hari ini, esok, dan selamanya! 💖
+                </p>
+                <div class="letter-signature">
+                  <p>Dengan cinta yang tulus,</p>
+                  <span class="signature-name">Yang Selalu Menyayangimu ❤️</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="toggleLetterBtn" class="action-glow-btn secondary-btn">
+          <i class="fa-solid fa-envelope-open"></i> <span id="letterBtnText">Buka Surat Cinta</span>
+        </button>
+      </div>
+
+      <!-- GALERI KENANGAN INDAH (PHOTO GALLERY) -->
+      <div class="glass-panel gallery-panel">
+        <h2 class="section-title">
+          <i class="fa-solid fa-camera-retro"></i> Galeri Senyuman Mbub
+        </h2>
+        <p class="section-desc">Koleksi potret manis dan momen yang selalu membuat hati ini bersyukur memiliki Mbub</p>
+
+        <div class="photo-grid" id="photoGalleryGrid">
+          <!-- 9 Real Photos loaded dynamically -->
+          <div class="polaroid-card" data-idx="1" style="--rotation: -2.5deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub1.jpeg" alt="Mbub Sayang 1" loading="lazy">
+              <div class="polaroid-caption">Senyuman termanis Mbub ✨</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="2" style="--rotation: 2deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub2.jpeg" alt="Mbub Sayang 2" loading="lazy">
+              <div class="polaroid-caption">Selalu cantik dan memesona 💖</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="3" style="--rotation: -1.5deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub3.jpeg" alt="Mbub Sayang 3" loading="lazy">
+              <div class="polaroid-caption">Momen yang tak terlupakan 🌸</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="4" style="--rotation: 3deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub4.jpeg" alt="Mbub Sayang 4" loading="lazy">
+              <div class="polaroid-caption">Si gemas kesayangan aku 🥰</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="5" style="--rotation: -2deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub5.jpeg" alt="Mbub Sayang 5" loading="lazy">
+              <div class="polaroid-caption">Bidadari dunia yang terindah 🌷</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="6" style="--rotation: 1.8deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub6.jpeg" alt="Mbub Sayang 6" loading="lazy">
+              <div class="polaroid-caption">Tatapan yang selalu menenangkan 💫</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="7" style="--rotation: -3deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub7.jpeg" alt="Mbub Sayang 7" loading="lazy">
+              <div class="polaroid-caption">Bahagia itu saat melihatmu tersenyum 🍯</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="8" style="--rotation: 2.2deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub8.jpeg" alt="Mbub Sayang 8" loading="lazy">
+              <div class="polaroid-caption">Cantik luar dalam tak tergantikan 💎</div>
+            </div>
+          </div>
+
+          <div class="polaroid-card" data-idx="9" style="--rotation: -1deg;">
+            <div class="polaroid-inner">
+              <img src="image/mbub9.jpeg" alt="Mbub Sayang 9" loading="lazy">
+              <div class="polaroid-caption">Untuk selamanya bersamamu ❤️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KARTU DOA & HARAPAN INTERAKTIF (WISH CARDS) -->
+      <div class="glass-panel wishes-panel">
+        <h2 class="section-title">
+          <i class="fa-solid fa-gift"></i> Kotak Harapan & Janji Hati
+        </h2>
+        <p class="section-desc">Klik setiap kartu di bawah ini untuk membuka rahasia doa manis khusus untukmu</p>
+
+        <div class="wish-cards-container">
+          <div class="flip-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <i class="fa-solid fa-hands-praying front-icon"></i>
+                <h3>Doa Terbaik</h3>
+                <p>Klik untuk membuka doa</p>
+              </div>
+              <div class="flip-card-back">
+                <i class="fa-solid fa-star back-icon"></i>
+                <p>Semoga setiap langkah kakimu dimudahkan, setiap impianmu diijabah oleh Allah, dan dijauhkan dari segala kesedihan. Aamiin ya Rabb 🤲✨</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <i class="fa-solid fa-face-smile-wink front-icon"></i>
+                <h3>Alasan Bersyukur</h3>
+                <p>Klik untuk membaca</p>
+              </div>
+              <div class="flip-card-back">
+                <i class="fa-solid fa-heart-circle-check back-icon"></i>
+                <p>Aku bersyukur karena ada Mbub di dunia ini. Kamu adalah alasan kenapa hari-hariku terasa jauh lebih hangat, berwarna, dan penuh arti! 🌈</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <i class="fa-solid fa-hand-holding-heart front-icon"></i>
+                <h3>Janji Sayang</h3>
+                <p>Klik untuk membaca janji</p>
+              </div>
+              <div class="flip-card-back">
+                <i class="fa-solid fa-infinity back-icon"></i>
+                <p>Aku berjanji akan selalu ada di sisimu, merayakan tawamu, merangkul saat sedihmu, dan terus mencintaimu lebih dan lebih setiap harinya. 💍❤️</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER CELEBRATION -->
+      <footer class="celebration-footer">
+        <p>Dibuat dengan sepenuh rasa cinta khusus untuk <strong>Mbub Sayang</strong> 💖</p>
+        <button id="launchConfettiAgain" class="tiny-confetti-btn">
+          <i class="fa-solid fa-party-horn"></i> Hujani Balon & Confetti Lagi! 🎉
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <!-- LIGHTBOX MODAL FOR POLAROID PHOTO EXPANSION -->
+  <div id="photoLightbox" class="lightbox-modal hidden">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Tutup foto">&times;</button>
+      <img id="lightboxImg" src="" alt="Zoom Foto Mbub">
+      <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <!-- FLOATING TAP BURST EFFECT CONTAINER -->
+  <div id="tapHeartsContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
